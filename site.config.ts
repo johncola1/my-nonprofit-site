@@ -32,6 +32,14 @@ export const site = {
   /** Mission statement shown below the values. */
   mission: "Nonprofit focused on facilitating an active lifestyle for kids and creating community around sport.",
 
+  /** About section (below the mission). */
+  about: {
+    name: "Johnny Cola",
+    role: "Founder",
+    story:
+      "I grew up playing every sport I could — always outside, always together with my brother and our friends. Discovery Sports is about bringing that same spirit and energy to kids growing up surrounded by screens.",
+  },
+
   /** Contact section heading. */
   contactHeading: "Come play.",
 

@@ -163,6 +163,8 @@ export default function Landscape({
 }) {
   const u = (n: string) => `${id}-${n}`;
   const url = (n: string) => `url(#${u(n)})`;
+  // Painterly filters work in scene units, over the whole (extended) scene.
+  const region = { filterUnits: "userSpaceOnUse" as const, x: -900, y: -450, width: 3400, height: 1550 };
   return (
     <svg
       aria-hidden
@@ -207,66 +209,126 @@ export default function Landscape({
           <stop offset="0" stopColor="#c7794d" />
           <stop offset="1" stopColor="#a8562f" />
         </linearGradient>
+        <clipPath id={u("rock-clip")}>
+          <polygon points={ridge} />
+        </clipPath>
+
+        {/* Hand-painted edges: shapes waver gently instead of being perfectly straight */}
+        <filter id={u("rough-lg")} {...region}>
+          <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="3" seed="7" result="n" />
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="13" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+        <filter id={u("rough-md")} {...region}>
+          <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="11" result="n" />
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+        <filter id={u("rough-sm")} {...region}>
+          <feTurbulence type="fractalNoise" baseFrequency="0.028" numOctaves="2" seed="4" result="n" />
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+        {/* Soft, feathered washes for shadows, glow and clouds */}
+        <filter id={u("wash")} {...region}>
+          <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="3" seed="5" result="n" />
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="26" xChannelSelector="R" yChannelSelector="G" result="d" />
+          <feGaussianBlur in="d" stdDeviation="5" />
+        </filter>
+        {/* Texture generators: grey noise, clipped to the shape they are applied to */}
+        <filter id={u("brush-h")} {...region}>
+          <feTurbulence type="fractalNoise" baseFrequency="0.003 0.075" numOctaves="4" seed="2" />
+          <feColorMatrix values="1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1" />
+          <feComposite in2="SourceGraphic" operator="in" />
+        </filter>
+        <filter id={u("brush-v")} {...region}>
+          <feTurbulence type="fractalNoise" baseFrequency="0.035 0.012" numOctaves="3" seed="9" />
+          <feColorMatrix values="1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1" />
+          <feComposite in2="SourceGraphic" operator="in" />
+        </filter>
+        <filter id={u("grain")} {...region}>
+          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="13" />
+          <feColorMatrix values="1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1" />
+          <feComposite in2="SourceGraphic" operator="in" />
+        </filter>
       </defs>
 
       {/* Sky + sun */}
       <rect x="-850" y="-400" width="3300" height="1450" fill={url("sky")} />
       <rect x="-850" y="-400" width="3300" height="1450" fill={url("sun")} />
 
-      {/* Distant hazy range */}
-      <polygon points={farRange} fill="#8c9c92" opacity="0.55" />
+      <rect x="-850" y="-400" width="3300" height="1450" filter={url("brush-h")} opacity="0.4" style={{ mixBlendMode: "soft-light" }} />
 
-      {/* Main range */}
-      <polygon points={ridge} fill={url("rock")} />
-      <polygon points={shadow} fill="#0e1f22" opacity="0.32" />
-      <polygon points={shadow2} fill="#0e1f22" opacity="0.28" />
-      <polygon points={shadow3} fill="#0e1f22" opacity="0.28" />
-      <g fill={url("snow")}>
-        <polygon points={snowMain} />
-        {snowPeaks.map((pts, i) => (
-          <polygon key={i} points={pts} />
-        ))}
+      {/* Painted clouds (the high ones only show on phones' taller view) */}
+      <g fill="#f3e2c2" filter={url("wash")}>
+        <ellipse cx="520" cy="120" rx="320" ry="16" opacity="0.1" />
+        <ellipse cx="1180" cy="250" rx="280" ry="13" opacity="0.1" />
+        <ellipse cx="300" cy="545" rx="270" ry="13" opacity="0.22" />
+        <ellipse cx="1290" cy="560" rx="320" ry="12" opacity="0.26" />
+        <ellipse cx="960" cy="500" rx="170" ry="8" opacity="0.18" />
       </g>
-      {/* Alpenglow on the snow */}
-      <polygon points={snowMain} fill="#ffb98a" opacity="0.14" />
+
+      {/* Distant range, main range, snow, foothills and meadow: one painted layer */}
+      <g filter={url("rough-lg")}>
+        <polygon points={farRange} fill="#8c9c92" opacity="0.55" />
+        <polygon points={ridge} fill={url("rock")} />
+        <g fill={url("snow")}>
+          <polygon points={snowMain} />
+          {snowPeaks.map((pts, i) => (
+            <polygon key={i} points={pts} />
+          ))}
+        </g>
+      </g>
+      {/* Vertical brush marks on the rock faces */}
+      <rect
+        x="-850" y="380" width="3300" height="460"
+        filter={url("brush-v")} clipPath={url("rock-clip")}
+        opacity="0.18" style={{ mixBlendMode: "soft-light" }}
+      />
+      {/* Shadows and alpenglow, laid on as soft washes */}
+      <g filter={url("wash")}>
+        <polygon points={shadow} fill="#0e1f22" opacity="0.34" />
+        <polygon points={shadow2} fill="#0e1f22" opacity="0.3" />
+        <polygon points={shadow3} fill="#0e1f22" opacity="0.3" />
+        <polygon points={snowMain} fill="#ffb98a" opacity="0.16" />
+      </g>
 
       {/* Valley mist */}
       <rect x="-850" y="660" width="3300" height="160" fill={url("mist")} />
 
-      {/* Foothills */}
-      <path d="M-850,768 C-500,752 -250,764 -50,772 C200,742 380,778 560,762 S900,746 1100,766 S1450,750 1650,762 S2100,748 2450,766 L2450,840 L-850,840Z" fill="#1d3a30" />
-      <path d={treeLine(3, 792, 12, 30, 11)} fill="#1a372a" />
+      <g filter={url("rough-lg")}>
+        <path d="M-850,768 C-500,752 -250,764 -50,772 C200,742 380,778 560,762 S900,746 1100,766 S1450,750 1650,762 S2100,748 2450,766 L2450,840 L-850,840Z" fill="#1d3a30" />
+        <rect x="-850" y="796" width="3300" height="260" fill={url("meadow")} />
+      </g>
+      <rect x="-850" y="790" width="3300" height="270" filter={url("brush-h")} opacity="0.3" style={{ mixBlendMode: "soft-light" }} />
+      <g filter={url("rough-md")}>
+        <path d={treeLine(3, 792, 12, 30, 11)} fill="#1a372a" />
+        <path d={stripes} fill="#ffffff" opacity="0.035" />
+        <path d={treeLine(9, 806, 16, 40, 13)} fill="#0f2a1d" />
+      </g>
 
-      {/* Meadow */}
-      <rect x="-850" y="796" width="3300" height="260" fill={url("meadow")} />
-      <path d={stripes} fill="#ffffff" opacity="0.035" />
-      <path d={treeLine(9, 806, 16, 40, 13)} fill="#0f2a1d" />
+      {/* Golf hole, courts: hand-drawn but still crisp enough to read */}
+      <g filter={url("rough-sm")}>
+        <path d={fairway} fill="#4b8a4f" opacity="0.55" />
+        <ellipse cx={bx} cy={by} rx={(F * 9) / 188} ry="9" fill="#dccb9e" opacity="0.9" />
+        <ellipse cx={gx} cy={gy} rx={greenRx} ry="17" fill="#5aa05e" />
+        <ellipse cx={gx} cy={gy} rx="5" ry="2" fill="#0b2015" />
+        <line x1={gx} y1={gy} x2={fx} y2={fy} stroke="#f1eee4" strokeWidth="1.6" />
+        <path d={`M${fx},${fy}l26,7l-26,7Z`} fill="#d6e86b" />
 
-      {/* Golf hole */}
-      <path d={fairway} fill="#4b8a4f" opacity="0.55" />
-      <ellipse cx={bx} cy={by} rx={(F * 9) / 188} ry="9" fill="#dccb9e" opacity="0.9" />
-      <ellipse cx={gx} cy={gy} rx={greenRx} ry="17" fill="#5aa05e" />
-      <ellipse cx={gx} cy={gy} rx="5" ry="2" fill="#0b2015" />
-      <line x1={gx} y1={gy} x2={fx} y2={fy} stroke="#f1eee4" strokeWidth="1.6" />
-      <path d={`M${fx},${fy}l26,7l-26,7Z`} fill="#d6e86b" />
+        <path d={tennisApron} fill="#9b5130" />
+        <path d={groundRect(-18, 18, T.z1, T.z2)} fill={url("clay")} />
+        <path d={tennisLines} fill="none" stroke="#f6efe2" strokeWidth="1.7" strokeLinejoin="round" />
+        <path d={tennisNet} fill="#0d1c17" opacity="0.16" />
+        <path d={tennisNetTop + tennisPosts} fill="none" stroke="#f6efe2" strokeWidth="1.4" opacity="0.9" />
 
-      {/* Clay tennis court */}
-      <path d={tennisApron} fill="#9b5130" />
-      <path d={groundRect(-18, 18, T.z1, T.z2)} fill={url("clay")} />
-      <path d={tennisLines} fill="none" stroke="#f6efe2" strokeWidth="1.7" strokeLinejoin="round" />
-      <path d={tennisNet} fill="#0d1c17" opacity="0.16" />
-      <path d={tennisNetTop + tennisPosts} fill="none" stroke="#f6efe2" strokeWidth="1.4" opacity="0.9" />
-
-      {/* Padel court */}
-      <path d={padelApron} fill="#1d4f33" />
-      <path d={padelSurface} fill="#2f6c87" />
-      <path d={padelLines} fill="none" stroke="#f1f5f2" strokeWidth="1.3" />
-      <path d={padelNet} fill="#0d1c17" opacity="0.18" />
-      <path d={padelGlass} fill="#d8eef2" opacity="0.045" />
-      <path d={padelFrame} fill="none" stroke="#dfe9e6" strokeWidth="0.9" opacity="0.28" />
+        <path d={padelApron} fill="#1d4f33" />
+        <path d={padelSurface} fill="#2f6c87" />
+        <path d={padelLines} fill="none" stroke="#f1f5f2" strokeWidth="1.3" />
+        <path d={padelNet} fill="#0d1c17" opacity="0.18" />
+        <path d={padelGlass} fill="#d8eef2" opacity="0.045" />
+        <path d={padelFrame} fill="none" stroke="#dfe9e6" strokeWidth="0.9" opacity="0.28" />
+      </g>
 
       {/* Framing pines */}
-      <g fill="#081a12">
+      <g fill="#081a12" filter={url("rough-md")}>
         <path d={pine(30, 1010, 430)} />
         <path d={pine(115, 1010, 330)} />
         <path d={pine(-40, 1010, 520)} />
@@ -274,6 +336,9 @@ export default function Landscape({
         <path d={pine(1480, 1010, 320)} />
         <path d={pine(1640, 1010, 520)} />
       </g>
+
+      {/* Over everything: a fine canvas grain */}
+      <rect x="-850" y="-400" width="3300" height="1450" filter={url("grain")} opacity="0.16" style={{ mixBlendMode: "soft-light" }} />
     </svg>
   );
 }

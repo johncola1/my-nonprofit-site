@@ -82,16 +82,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Values */}
-        <section id="values" aria-label="Our values" className="border-y border-chalk/10 bg-turf-deep">
-          <ul className="mx-auto grid max-w-6xl grid-cols-2 lg:grid-cols-4">
-            {site.values.map((v, i) => (
-              <li
-                key={v}
-                className={`px-4 py-14 sm:px-8 sm:py-20 ${i % 2 ? "border-l border-chalk/10" : ""} ${
-                  i > 1 ? "border-t border-chalk/10 lg:border-t-0" : ""
-                } ${i === 2 ? "lg:border-l" : ""}`}
-              >
+        {/* Values: four equal boxes across the full width, each word centered */}
+        <section id="values" aria-label="Our values" className="border-y border-chalk/10 bg-chalk/10">
+          <ul className="grid grid-cols-2 gap-px lg:grid-cols-4">
+            {site.values.map((v) => (
+              <li key={v} className="flex items-center justify-center bg-turf-deep px-4 py-14 text-center sm:py-20">
                 <span className="font-display text-4xl sm:text-5xl">{v}</span>
               </li>
             ))}
@@ -111,6 +106,23 @@ export default function Home() {
             <p className="mt-8 font-display text-4xl leading-[1.15] tracking-tight text-balance sm:text-5xl lg:text-6xl">
               {site.mission}
             </p>
+          </div>
+        </section>
+
+        {/* About */}
+        <section aria-labelledby="about-heading" className="border-t border-chalk/10 bg-turf-deep">
+          <div className="mx-auto grid max-w-5xl gap-8 px-4 py-24 sm:px-8 sm:py-28 lg:grid-cols-[2fr_3fr] lg:items-center lg:gap-16">
+            <div>
+              <p className="flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-chalk-muted">
+                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-ball" />
+                About
+              </p>
+              <h2 id="about-heading" className="mt-6 font-display text-5xl leading-none tracking-tight sm:text-6xl">
+                {site.about.name}
+              </h2>
+              <p className="mt-3 text-sm uppercase tracking-[0.2em] text-chalk-muted">{site.about.role}</p>
+            </div>
+            <p className="text-xl leading-relaxed text-chalk/85 sm:text-2xl sm:leading-relaxed">{site.about.story}</p>
           </div>
         </section>
 
