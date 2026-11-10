@@ -55,17 +55,6 @@ function pine(x: number, base: number, h: number) {
   return d;
 }
 
-/** A puffy, flat cartoon cloud: overlapping circles on a rounded base. */
-function cloud(cx: number, cy: number, w: number) {
-  const r = w / 4;
-  return [
-    `M${cx - w / 2 + r},${cy + r * 0.55}h${w - 2 * r}a${r * 0.55},${r * 0.55} 0 0 0 0,${-r * 1.1}h${-(w - 2 * r)}a${r * 0.55},${r * 0.55} 0 0 0 0,${r * 1.1}Z`,
-    `M${cx - w * 0.22 + r * 0.8},${cy}a${r * 0.8},${r * 0.8} 0 1 0 ${-r * 1.6},0a${r * 0.8},${r * 0.8} 0 1 0 ${r * 1.6},0Z`,
-    `M${cx + r * 1.15},${cy - r * 0.25}a${r * 1.15},${r * 1.15} 0 1 0 ${-r * 2.3},0a${r * 1.15},${r * 1.15} 0 1 0 ${r * 2.3},0Z`,
-    `M${cx + w * 0.24 + r * 0.75},${cy + r * 0.05}a${r * 0.75},${r * 0.75} 0 1 0 ${-r * 1.5},0a${r * 0.75},${r * 0.75} 0 1 0 ${r * 1.5},0Z`,
-  ].join("");
-}
-
 // ── Mountains ───────────────────────────────────────────────────────
 // Ridge profile (a Teton-like central spire with flanking peaks), squashed into place.
 const ridgeRaw: [number, number][] = [
@@ -226,12 +215,6 @@ export default function Landscape({
       {/* Sun peeking over the ridge */}
       <circle cx="1215" cy="550" r="32" fill="#ffe7b3" />
 
-      {/* A few small puffy clouds, tucked behind the peaks (the high one only shows on phones' taller view) */}
-      <g fill="#f6ead0" opacity="0.9">
-        <path d={cloud(1085, 300, 140)} />
-        <path d={cloud(300, 562, 105)} />
-        <path d={cloud(1335, 578, 115)} />
-      </g>
 
       {/* Distant hazy range */}
       <polygon points={farRange} fill="#8c9c92" opacity="0.55" stroke="#56695f" strokeWidth="2" strokeLinejoin="round" />
