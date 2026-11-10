@@ -46,8 +46,8 @@ export default function Home() {
         {/* Hero
             Phones & tablets: the scene fills the screen and the words sit in the sky above it.
             Laptops & up: the whole scene is shown zoomed out, with the words underneath the courts. */}
-        <section className="relative flex min-h-[100svh] flex-col overflow-hidden bg-turf-deep">
-          <div className="absolute inset-0 lg:relative lg:inset-auto lg:h-[min(calc(100svh-13rem),38.75vw)] lg:w-full lg:shrink-0">
+        <section className="relative flex min-h-screen min-h-[100svh] flex-col overflow-hidden bg-turf-deep">
+          <div className="absolute inset-0 lg:relative lg:inset-auto lg:w-full lg:shrink-0">
             {site.heroImage ? (
               <Image src={site.heroImage} alt="" fill priority sizes="100vw" className="object-cover" />
             ) : (
@@ -56,7 +56,7 @@ export default function Home() {
                 <Landscape id="ls-m" viewBox="0 -320 1600 1320" className="sm:hidden" />
                 <Landscape id="ls-t" viewBox="0 0 1600 1000" className="hidden sm:block lg:hidden" />
                 {/* Laptops: the whole scene, from just above the peaks down to the courts, always in view */}
-                <Landscape id="ls-d" viewBox="0 380 1600 620" fit className="hidden lg:block" />
+                <Landscape id="ls-d" viewBox="0 380 1600 620" fit className="hidden lg:block lg:max-h-[calc(100vh-13rem)]" />
               </>
             )}
             {/* Shade the sky slightly so the words and menu always read clearly */}

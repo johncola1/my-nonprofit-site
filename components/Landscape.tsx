@@ -154,7 +154,11 @@ export default function Landscape({
   id: string;
   viewBox: string;
   className?: string;
-  /** true: always show the whole frame (extra width reveals more scenery); false: fill and crop. */
+  /**
+   * true: a normal full-width picture that sizes itself from its own shape and always shows
+   * the whole frame (if its height is capped, extra width reveals more scenery).
+   * false: a background layer that fills its parent and crops.
+   */
   fit?: boolean;
 }) {
   const u = (n: string) => `${id}-${n}`;
@@ -164,7 +168,7 @@ export default function Landscape({
       aria-hidden
       viewBox={viewBox}
       preserveAspectRatio={fit ? "xMidYMax meet" : "xMidYMax slice"}
-      className={`pointer-events-none absolute inset-0 h-full w-full ${className ?? ""}`}
+      className={`pointer-events-none ${fit ? "block h-auto w-full" : "absolute inset-0 h-full w-full"} ${className ?? ""}`}
     >
       <defs>
         <linearGradient id={u("sky")} gradientUnits="userSpaceOnUse" x1="0" y1="-300" x2="0" y2="800">
