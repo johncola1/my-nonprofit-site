@@ -67,21 +67,19 @@ const ry = (y: number) => 420 + (y - 140) * 0.75;
 const tx = (pts: [number, number][]) => pts.map(([x, y]) => `${x},${ry(y).toFixed(1)}`).join(" ");
 
 const ridge = `${tx(ridgeRaw)} 1600,900 0,900`;
-// Snowfields: generous caps on every peak, with soft, gently rolling lower edges.
+// Snowfields: jagged caps in the original style, reaching a little further down.
 const snowMain = tx([
-  [595, 310], [640, 250], [700, 210], [745, 240], [790, 175], [820, 140], [845, 185], [880, 160], [915, 230],
-  [960, 265], [1010, 240], [1040, 276], [1028, 290], [1005, 298], [985, 305], [962, 316], [940, 322], [915, 334],
-  [892, 340], [866, 352], [845, 358], [826, 366], [806, 360], [784, 352], [760, 346], [736, 336], [712, 330],
-  [688, 322], [664, 318], [640, 312], [615, 314],
+  [625, 270], [640, 250], [700, 210], [745, 240], [790, 175], [820, 140], [845, 185], [880, 160], [915, 230],
+  [935, 246], [925, 262], [908, 245], [893, 275], [876, 240], [861, 282], [842, 252], [831, 300], [816, 258],
+  [801, 292], [786, 262], [766, 318], [747, 292], [727, 322], [707, 280], [688, 326], [671, 300], [652, 318],
+  [638, 290],
 ]);
 const snowPeaks = [
-  [[490, 335], [520, 300], [580, 330], [566, 342], [548, 346], [530, 350], [512, 348], [498, 342]],
-  [[385, 361], [410, 340], [460, 370], [446, 378], [428, 382], [410, 378], [395, 372]],
-  [[330, 412], [350, 390], [372, 372], [366, 388], [354, 398], [342, 408]],
-  [[205, 444], [230, 430], [260, 442], [248, 450], [232, 452], [216, 450]],
-  [[1045, 282], [1060, 300], [1110, 280], [1150, 320], [1136, 328], [1116, 330], [1096, 326], [1076, 318], [1058, 308]],
-  [[1200, 330], [1230, 320], [1260, 350], [1246, 356], [1228, 356], [1212, 346]],
-  [[1325, 370], [1360, 360], [1395, 390], [1380, 396], [1362, 398], [1344, 392]],
+  [[498, 326], [520, 300], [580, 330], [572, 348], [556, 338], [541, 362], [526, 340], [513, 360], [503, 342]],
+  [[388, 358], [410, 340], [460, 370], [450, 384], [436, 374], [423, 394], [410, 378], [398, 388]],
+  [[335, 406], [350, 390], [372, 372], [366, 390], [356, 384], [348, 404], [340, 398]],
+  [[1040, 322], [1060, 300], [1110, 280], [1142, 307], [1126, 318], [1108, 306], [1092, 334], [1076, 318], [1060, 344], [1048, 330]],
+  [[1205, 328], [1230, 320], [1255, 345], [1244, 352], [1234, 342], [1224, 360], [1213, 343]],
 ].map((pts) => tx(pts as [number, number][]));
 // Shadowed (east) faces give the range its depth.
 const shadow = tx([
@@ -177,7 +175,7 @@ export default function Landscape({ id, viewBox, className }: { id: string; view
           <stop offset="0.55" stopColor="#3b5250" />
           <stop offset="1" stopColor="#25393a" />
         </linearGradient>
-        <linearGradient id={u("snow")} gradientUnits="userSpaceOnUse" x1="0" y1="420" x2="0" y2="740">
+        <linearGradient id={u("snow")} gradientUnits="userSpaceOnUse" x1="0" y1="420" x2="0" y2="600">
           <stop offset="0" stopColor="#f6f2e8" stopOpacity="0.95" />
           <stop offset="1" stopColor="#dfe6e2" stopOpacity="0.55" />
         </linearGradient>
@@ -206,6 +204,9 @@ export default function Landscape({ id, viewBox, className }: { id: string; view
 
       {/* Main range */}
       <polygon points={ridge} fill={url("rock")} />
+      <polygon points={shadow} fill="#0e1f22" opacity="0.32" />
+      <polygon points={shadow2} fill="#0e1f22" opacity="0.28" />
+      <polygon points={shadow3} fill="#0e1f22" opacity="0.28" />
       <g fill={url("snow")}>
         <polygon points={snowMain} />
         {snowPeaks.map((pts, i) => (
@@ -213,16 +214,7 @@ export default function Landscape({ id, viewBox, className }: { id: string; view
         ))}
       </g>
       {/* Alpenglow on the snow */}
-      <g fill="#ffb98a" opacity="0.12">
-        <polygon points={snowMain} />
-        {snowPeaks.map((pts, i) => (
-          <polygon key={i} points={pts} />
-        ))}
-      </g>
-      {/* Shadowed faces drawn over rock and snow alike, so shaded snow reads blue-white */}
-      <polygon points={shadow} fill="#14262c" opacity="0.3" />
-      <polygon points={shadow2} fill="#14262c" opacity="0.26" />
-      <polygon points={shadow3} fill="#14262c" opacity="0.26" />
+      <polygon points={snowMain} fill="#ffb98a" opacity="0.14" />
 
       {/* Valley mist */}
       <rect x="-50" y="660" width="1700" height="160" fill={url("mist")} />
