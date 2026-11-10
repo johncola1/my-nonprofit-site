@@ -14,7 +14,7 @@ export const site = {
   heading: "Discovery Sports",
 
   /** One short line under the heading. */
-  subheading: "A nonprofit bringing people together through sport.",
+  subheading: "Bringing people together.",
 
   /** Sports listed in the "Sports" dropdown at the top right. */
   sports: ["Golf", "Padel", "Skiing"],
