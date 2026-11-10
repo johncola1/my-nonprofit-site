@@ -29,6 +29,9 @@ export const site = {
   /** Values — one word each. */
   values: ["Access", "Movement", "Community", "Joy"],
 
+  /** Mission statement shown below the values. */
+  mission: "Nonprofit created to facilitate an active lifestyle for kids and create community around sport.",
+
   /** Contact section heading. */
   contactHeading: "Come play.",
 
@@ -58,6 +61,12 @@ export const site = {
 
   /** e.g. "A 501(c)(3) nonprofit." — leave "" to hide. */
   legalNote: "",
+
+  /**
+   * Donate button (in the contact section). Paste the link to your donation page here,
+   * e.g. from Zeffy, Givebutter, PayPal or Stripe. If "", the button opens an email to you instead.
+   */
+  donateUrl: "",
 
   /**
    * Contact form delivery. Paste a form endpoint (e.g. from formspree.io) to have

@@ -98,6 +98,22 @@ export default function Home() {
           </ul>
         </section>
 
+        {/* Mission */}
+        <section aria-labelledby="mission-heading" className="bg-turf-deep">
+          <div className="mx-auto max-w-4xl px-4 py-24 text-center sm:px-8 sm:py-32">
+            <p
+              id="mission-heading"
+              className="flex items-center justify-center gap-3 text-xs uppercase tracking-[0.3em] text-chalk-muted"
+            >
+              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-ball" />
+              Our mission
+            </p>
+            <p className="mt-8 font-display text-4xl leading-[1.15] tracking-tight text-balance sm:text-5xl lg:text-6xl">
+              {site.mission}
+            </p>
+          </div>
+        </section>
+
         {/* Contact */}
         <section id="contact" className="turf relative overflow-hidden">
           <div className="relative mx-auto grid max-w-6xl gap-14 px-4 py-24 sm:px-8 sm:py-32 lg:grid-cols-2 lg:gap-24">
@@ -109,6 +125,17 @@ export default function Home() {
               >
                 {site.email}
               </a>
+              <div className="mt-12">
+                <a
+                  href={site.donateUrl || `mailto:${site.email}?subject=${encodeURIComponent("I'd like to donate")}`}
+                  {...(site.donateUrl ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="group inline-flex items-center gap-3 rounded-full bg-chalk px-8 py-4 text-base font-semibold tracking-wide text-turf-deep shadow-lg shadow-black/20 transition hover:bg-ball"
+                >
+                  Donate
+                  <span aria-hidden className="transition group-hover:translate-x-0.5">→</span>
+                </a>
+                <p className="mt-3 text-sm text-chalk-muted">Help more kids get in the game.</p>
+              </div>
             </div>
             <ContactForm />
           </div>
