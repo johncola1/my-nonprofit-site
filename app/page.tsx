@@ -43,31 +43,42 @@ export default function Home() {
       </header>
 
       <main>
-        {/* Hero */}
-        <section className="relative flex min-h-[100svh] overflow-hidden bg-turf-deep">
-          {site.heroImage ? (
-            <Image src={site.heroImage} alt="" fill priority sizes="100vw" className="object-cover" />
-          ) : (
-            <>
-              {/* Taller crop on phones keeps the peaks below the heading */}
-              <Landscape id="ls-m" viewBox="0 -320 1600 1320" className="sm:hidden" />
-              <Landscape id="ls-d" viewBox="0 0 1600 1000" className="hidden sm:block" />
-            </>
-          )}
-          {/* Shade the sky slightly so the words always read clearly */}
-          <div
-            aria-hidden
-            className="absolute inset-0 bg-[linear-gradient(to_bottom,rgb(6_18_16/0.55),rgb(6_18_16/0.15)_45%,transparent_70%)]"
-          />
-          <div className="relative mx-auto w-full max-w-6xl px-4 pt-32 sm:px-8 sm:pt-36">
+        {/* Hero
+            Phones & tablets: the scene fills the screen and the words sit in the sky above it.
+            Laptops & up: the whole scene is shown zoomed out, with the words underneath the courts. */}
+        <section className="relative flex min-h-[100svh] flex-col overflow-hidden bg-turf-deep">
+          <div className="absolute inset-0 lg:relative lg:inset-auto lg:h-[min(calc(100svh-13rem),38.75vw)] lg:w-full lg:shrink-0">
+            {site.heroImage ? (
+              <Image src={site.heroImage} alt="" fill priority sizes="100vw" className="object-cover" />
+            ) : (
+              <>
+                {/* Taller crop on phones keeps the peaks below the heading */}
+                <Landscape id="ls-m" viewBox="0 -320 1600 1320" className="sm:hidden" />
+                <Landscape id="ls-t" viewBox="0 0 1600 1000" className="hidden sm:block lg:hidden" />
+                {/* Laptops: the whole scene, from just above the peaks down to the courts, always in view */}
+                <Landscape id="ls-d" viewBox="0 380 1600 620" fit className="hidden lg:block" />
+              </>
+            )}
+            {/* Shade the sky slightly so the words and menu always read clearly */}
+            <div
+              aria-hidden
+              className="absolute inset-0 bg-[linear-gradient(to_bottom,rgb(6_18_16/0.55),rgb(6_18_16/0.15)_45%,transparent_70%)] lg:bg-[linear-gradient(to_bottom,rgb(6_18_16/0.5),transparent_22%)]"
+            />
+            {/* Laptops: let the meadow melt into the dark green below */}
+            <div
+              aria-hidden
+              className="absolute inset-x-0 bottom-0 hidden h-1/4 bg-gradient-to-b from-transparent to-turf-deep lg:block"
+            />
+          </div>
+          <div className="relative mx-auto w-full max-w-6xl px-4 pt-32 sm:px-8 sm:pt-36 lg:flex lg:flex-1 lg:flex-col lg:items-center lg:justify-center lg:pb-14 lg:pt-4 lg:text-center">
             <p className="rise flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-chalk/75">
               <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-ball" />
               {site.eyebrow}
             </p>
-            <h1 className="rise rise-2 mt-5 font-display text-7xl leading-[0.92] tracking-tight drop-shadow-[0_2px_24px_rgb(0_0_0/0.35)] sm:text-8xl lg:text-[9rem]">
+            <h1 className="rise rise-2 mt-5 font-display text-7xl leading-[0.92] tracking-tight drop-shadow-[0_2px_24px_rgb(0_0_0/0.35)] sm:text-8xl lg:mt-4 lg:text-[7.5rem]">
               <Heading />
             </h1>
-            <p className="rise rise-3 mt-5 max-w-lg text-lg text-chalk/80 sm:text-xl">{site.subheading}</p>
+            <p className="rise rise-3 mt-5 max-w-lg text-lg text-chalk/80 sm:text-xl lg:mt-4">{site.subheading}</p>
           </div>
         </section>
 

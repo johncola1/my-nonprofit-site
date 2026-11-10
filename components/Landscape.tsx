@@ -32,7 +32,7 @@ const rand = (n: number) => {
 function treeLine(seed: number, base: number, minH: number, maxH: number, step: number) {
   let d = "";
   let i = 0;
-  for (let x = -20; x < 1620; x += step * (0.6 + rand(seed + i) * 0.8)) {
+  for (let x = -820; x < 2420; x += step * (0.6 + rand(seed + i) * 0.8)) {
     const h = minH + rand(seed + i * 3.1) * (maxH - minH);
     const b = base + Math.sin(x / 85 + seed) * 5;
     const w = h * 0.26;
@@ -66,7 +66,7 @@ const ridgeRaw: [number, number][] = [
 const ry = (y: number) => 420 + (y - 140) * 0.75;
 const tx = (pts: [number, number][]) => pts.map(([x, y]) => `${x},${ry(y).toFixed(1)}`).join(" ");
 
-const ridge = `${tx(ridgeRaw)} 1600,900 0,900`;
+const ridge = `-800,760 ${tx(ridgeRaw)} 2400,690 2400,900 -800,900`;
 // Snowfields: jagged caps in the original style, reaching a little further down.
 const snowMain = tx([
   [625, 270], [640, 250], [700, 210], [745, 240], [790, 175], [820, 140], [845, 185], [880, 160], [915, 230],
@@ -89,7 +89,7 @@ const shadow2 = tx([[520, 300], [580, 330], [640, 250], [622, 360], [590, 460], 
 const shadow3 = tx([[1060, 300], [1110, 280], [1170, 340], [1150, 440], [1100, 520], [1080, 380]]);
 
 const farRange =
-  "0,655 120,628 260,645 380,600 520,632 640,596 760,618 880,590 1000,604 1150,578 1300,612 1450,588 1600,620 1600,820 0,820";
+  "-800,662 -400,640 0,655 120,628 260,645 380,600 520,632 640,596 760,618 880,590 1000,604 1150,578 1300,612 1450,588 1600,620 2000,600 2400,628 2400,820 -800,820";
 
 // ── Meadow mowing stripes (converging toward the vanishing point) ──
 let stripes = "";
@@ -145,14 +145,25 @@ const greenRx = (F * 20) / 205;
 const [bx, by] = p(-86, 188);
 const [fx, fy] = p(-60, 205, 8);
 
-export default function Landscape({ id, viewBox, className }: { id: string; viewBox: string; className?: string }) {
+export default function Landscape({
+  id,
+  viewBox,
+  className,
+  fit = false,
+}: {
+  id: string;
+  viewBox: string;
+  className?: string;
+  /** true: always show the whole frame (extra width reveals more scenery); false: fill and crop. */
+  fit?: boolean;
+}) {
   const u = (n: string) => `${id}-${n}`;
   const url = (n: string) => `url(#${u(n)})`;
   return (
     <svg
       aria-hidden
       viewBox={viewBox}
-      preserveAspectRatio="xMidYMax slice"
+      preserveAspectRatio={fit ? "xMidYMax meet" : "xMidYMax slice"}
       className={`pointer-events-none absolute inset-0 h-full w-full ${className ?? ""}`}
     >
       <defs>
@@ -195,8 +206,8 @@ export default function Landscape({ id, viewBox, className }: { id: string; view
       </defs>
 
       {/* Sky + sun */}
-      <rect x="-50" y="-400" width="1700" height="1450" fill={url("sky")} />
-      <rect x="-50" y="-400" width="1700" height="1450" fill={url("sun")} />
+      <rect x="-850" y="-400" width="3300" height="1450" fill={url("sky")} />
+      <rect x="-850" y="-400" width="3300" height="1450" fill={url("sun")} />
 
       {/* Distant hazy range */}
       <polygon points={farRange} fill="#8c9c92" opacity="0.55" />
@@ -216,14 +227,14 @@ export default function Landscape({ id, viewBox, className }: { id: string; view
       <polygon points={snowMain} fill="#ffb98a" opacity="0.14" />
 
       {/* Valley mist */}
-      <rect x="-50" y="660" width="1700" height="160" fill={url("mist")} />
+      <rect x="-850" y="660" width="3300" height="160" fill={url("mist")} />
 
       {/* Foothills */}
-      <path d="M-50,772 C200,742 380,778 560,762 S900,746 1100,766 S1450,750 1650,762 L1650,840 L-50,840Z" fill="#1d3a30" />
+      <path d="M-850,768 C-500,752 -250,764 -50,772 C200,742 380,778 560,762 S900,746 1100,766 S1450,750 1650,762 S2100,748 2450,766 L2450,840 L-850,840Z" fill="#1d3a30" />
       <path d={treeLine(3, 792, 12, 30, 11)} fill="#1a372a" />
 
       {/* Meadow */}
-      <rect x="-50" y="796" width="1700" height="260" fill={url("meadow")} />
+      <rect x="-850" y="796" width="3300" height="260" fill={url("meadow")} />
       <path d={stripes} fill="#ffffff" opacity="0.035" />
       <path d={treeLine(9, 806, 16, 40, 13)} fill="#0f2a1d" />
 
