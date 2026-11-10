@@ -30,7 +30,7 @@ export const site = {
   values: ["Access", "Movement", "Community", "Joy"],
 
   /** Mission statement shown below the values. */
-  mission: "Nonprofit created to facilitate an active lifestyle for kids and create community around sport.",
+  mission: "Nonprofit focused on facilitating an active lifestyle for kids and creating community around sport.",
 
   /** Contact section heading. */
   contactHeading: "Come play.",
