@@ -37,7 +37,7 @@ export const site = {
     name: "Johnny Cola",
     role: "Founder",
     story:
-      "I grew up playing every sport I could — always outside, always together with my brother and our friends. Discovery Sports is about bringing that same spirit and energy to kids growing up surrounded by screens.",
+      "Johnny grew up outside, playing every sport there was alongside a brother and a big crew of friends. Discovery Sports is about passing that spirit on: getting kids off their screens and playing together.",
   },
 
   /** Contact section heading. */
